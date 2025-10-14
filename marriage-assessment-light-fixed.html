@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Marriage Type Assessment</title>
+  <meta name="description"
+    content="A gentle, faith-centered marriage assessment that identifies your current marriage type and suggests a growth path." />
+  <style>
+    :root {
+      /* Soft light brand-ish palette (tweak to match your site) */
+      --bg: #faf7f2;
+      /* page background (warm/ivory) */
+      --container: #ffffff;
+      /* cards/panels */
+      --ink: #1f2937;
+      /* main text */
+      --muted: #6b7280;
+      /* secondary text */
+      --border: #e7e5e4;
+      /* subtle borders */
+      --accent: #b38b2e;
+      /* gold accent */
+      --accent-2: #6d4aa1;
+      /* plum accent */
+      --good: #0a7b50;
+      /* flourishing/ok text */
+      --warn: #b7791f;
+      /* caution */
+      --bad: #b91c1c;
+      /* struggling */
+      --shadow: 0 8px 30px rgba(17, 24, 39, 0.08);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      line-height: 1.6
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 16px
+    }
+
+    .hero {
+      background: linear-gradient(180deg, rgba(255, 255, 255, .7), rgba(255, 255, 255, 1));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 20px
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-weight: 700;
+      letter-spacing: .2px
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin: 0
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      color: #fff;
+      background: linear-gradient(90deg, var(--accent), #d9b85a);
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-left: 8px
+    }
+
+    .progress {
+      height: 10px;
+      background: #f3f4f6;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      margin-top: 8px
+    }
+
+    .bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #e6c56c);
+      width: 0%
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 18px
+    }
+
+    @media(min-width:980px) {
+      .grid {
+        grid-template-columns: 3fr 2fr;
+      }
+    }
+
+    .card {
+      background: var(--container);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px
+    }
+
+    .section-title {
+      margin: 0 0 6px;
+      font-size: 18px;
+      font-weight: 700
+    }
+
+    .q {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff
+    }
+
+    .qhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px
+    }
+
+    .qnum {
+      color: var(--accent);
+      font-weight: 600
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f6f3ff;
+      border: 1px solid #e9e3ff;
+      color: var(--accent-2);
+      font-size: 12px
+    }
+
+    .scale {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px
+    }
+
+    .opt {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer
+    }
+
+    .opt:hover {
+      border-color: #e6c56c;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .04)
+    }
+
+    .opt input {
+      margin-right: 8px
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px
+    }
+
+    .btn {
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #fff;
+      cursor: pointer;
+      font-weight: 600
+    }
+
+    .btn.primary {
+      background: linear-gradient(90deg, var(--accent), #e6c56c);
+      color: #fff;
+      border-color: transparent
+    }
+
+    .btn.ghost {
+      background: transparent
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px
+    }
+
+    th,
+    td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 14px
+    }
+
+    th {
+      background: #fafafa
+    }
+
+    .good {
+      color: var(--good)
+    }
+
+    .warn {
+      color: var(--warn)
+    }
+
+    .bad {
+      color: var(--bad)
+    }
+
+    .note {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .foot {
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center
+    }
+
+    .scripture {
+      font-style: italic
+    }
+
+    @media print {
+      .print-hide {
+        display: none !important;
+      }
+
+      body {
+        background: #fff;
+      }
+
+      .container {
+        margin: 0;
+      }
+
+      .card,
+      .hero {
+        box-shadow: none;
+        border-color: #ddd;
+      }
+    }
+  </style>
+  <!-- CSS_ADSBLOCK_START -->
+  <link rel="stylesheet" href="https://adblockers.opera-mini.net/css_block/default-domainless.css" type="text/css" />
+  <!-- CSS_ADSBLOCK_END -->
+</head>
+
+<body>
+  <div class="container">
+    <div class="hero">
+      <h1>Marriage Type Assessment <span class="badge">Anonymous</span></h1>
+      <p class="subtitle">Rate each statement from <strong>1–5</strong>. Results are calculated in your browser only.
+      </p>
+      <div class="progress" aria-label="Progress">
+        <div class="bar" id="bar"></div>
+      </div>
+      <p class="note" id="progressNote"></p>
+    </div>
+
+    <div class="grid" id="app">
+      <div id="questions"></div>
+
+      <div class="card">
+        <h2 class="section-title">Your Result</h2>
+        <p class="note print-hide">Click <strong>Calculate results</strong> when you’re ready. You can then print or
+          save as PDF.</p>
+        <div id="resultBody"></div>
+        <div class="actions print-hide">
+          <button class="btn primary" id="calcBtn">✅ Calculate results</button>
+          <button class="btn" id="printBtn">🖨️ Print / Save PDF</button>
+          <button class="btn ghost" id="resetBtn">↺ Reset</button>
+          <button class="btn" id="exportBtn">⬇︎ Export JSON</button>
+        </div>
+        <div class="foot"><span class="scripture">“Except the Lord build the house, they labour in vain that build it.”
+            — Psalm 127:1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // === Data ===
+    const TYPES = [
+      { id: "loveless", name: "Loveless Marriage", group: "Struggling" },
+      { id: "sexless", name: "Sexless Marriage", group: "Struggling" },
+      { id: "dissatisfied", name: "Sexually Dissatisfied Marriage", group: "Struggling" },
+      { id: "dull", name: "Dull (Lost the Spark)", group: "Struggling" },
+      { id: "toxic", name: "Toxic / One-Sided", group: "Struggling" },
+      { id: "functional", name: "Functional Marriage", group: "Stable" },
+      { id: "good", name: "Good Marriage", group: "Stable" },
+      { id: "thriving", name: "Thriving Marriage", group: "Flourishing" },
+      { id: "kingdom", name: "Kingdom-Purpose Marriage", group: "Flourishing" },
+    ];
+
+    const DESCRIPTIONS = {
+      loveless: "Emotional warmth and tenderness have faded. Communication is transactional; you may feel like housemates.",
+      sexless: "Sexual intimacy is rare or absent, often leading to frustration or emotional distance.",
+      dissatisfied: "Sex occurs but lacks fulfillment or connection; intimacy may feel mechanical or one-sided.",
+      dull: "The relationship has lost its spark—routine and responsibilities have replaced joy and fun.",
+      toxic: "Marked by imbalance, control, criticism, or emotional exhaustion; one partner may dominate.",
+      functional: "You operate efficiently as a team, but emotional or romantic depth may be limited.",
+      good: "Balanced, respectful, and loving. Healthy communication and safety are present.",
+      thriving: "Vibrant growth with deep emotional and spiritual closeness; you invest intentionally.",
+      kingdom: "Christ-centered, mission-driven unity that serves God’s purpose and impacts others."
+    };
+
+    const QUESTIONS = [
+      // Emotional Connection
+      { id: 1, text: "We rarely express affection or appreciation toward each other.", section: "Emotional Connection" },
+      { id: 2, text: "Our conversations are mostly about tasks, not feelings.", section: "Emotional Connection" },
+      { id: 3, text: "I feel emotionally seen, understood, and valued by my spouse.", section: "Emotional Connection" },
+      { id: 4, text: "We still have fun and laugh together often.", section: "Emotional Connection" },
+      { id: 5, text: "I sometimes feel like we live more like roommates than lovers.", section: "Emotional Connection" },
+      // Intimacy & Affection
+      { id: 6, text: "Sexual intimacy is satisfying and emotionally connecting for us.", section: "Intimacy & Affection" },
+      { id: 7, text: "We avoid or delay intimacy out of disinterest or frustration.", section: "Intimacy & Affection" },
+      { id: 8, text: "Physical affection outside of sex (touch, hugs, warmth) is common between us.", section: "Intimacy & Affection" },
+      { id: 9, text: "I often feel rejected, unwanted, or disconnected physically.", section: "Intimacy & Affection" },
+      { id: 10, text: "Our intimacy feels routine rather than passionate or meaningful.", section: "Intimacy & Affection" },
+      // Communication & Conflict
+      { id: 11, text: "We can disagree respectfully without hurting each other.", section: "Communication & Conflict" },
+      { id: 12, text: "One partner usually dominates or shuts down conversations.", section: "Communication & Conflict" },
+      { id: 13, text: "We both take responsibility for mistakes or misunderstandings.", section: "Communication & Conflict" },
+      { id: 14, text: "We talk openly about needs and expectations without fear.", section: "Communication & Conflict" },
+      { id: 15, text: "There is often tension, criticism, or resentment between us.", section: "Communication & Conflict" },
+      // Partnership & Purpose
+      { id: 16, text: "We handle daily responsibilities as an effective team.", section: "Partnership & Purpose" },
+      { id: 17, text: "We pray, plan, and dream together regularly.", section: "Partnership & Purpose" },
+      { id: 18, text: "Our marriage feels driven by a shared spiritual or life purpose.", section: "Partnership & Purpose" },
+      { id: 19, text: "We make decisions prayerfully and as a team.", section: "Partnership & Purpose" },
+      { id: 20, text: "Our relationship positively impacts others around us.", section: "Partnership & Purpose" },
+      // Joy & Growth
+      { id: 21, text: "We intentionally nurture our relationship (date nights, check-ins, prayer).", section: "Joy & Growth" },
+      { id: 22, text: "We celebrate each other’s growth and achievements.", section: "Joy & Growth" },
+      { id: 23, text: "Our relationship has lost its spark or sense of excitement.", section: "Joy & Growth" },
+      { id: 24, text: "I often feel drained or anxious in this relationship.", section: "Joy & Growth" },
+      { id: 25, text: "We feel united and at peace, even in hard times.", section: "Joy & Growth" },
+      // Faith & Spiritual Connection
+      { id: 26, text: "Christ is truly the center of our marriage.", section: "Faith & Spiritual Connection" },
+      { id: 27, text: "We serve God together in some way (ministry, kindness, mentoring).", section: "Faith & Spiritual Connection" },
+      { id: 28, text: "We both seek to love each other as Christ loves the Church.", section: "Faith & Spiritual Connection" },
+      { id: 29, text: "Our unity draws others closer to God.", section: "Faith & Spiritual Connection" },
+      { id: 30, text: "We regularly pray together for our marriage and others.", section: "Faith & Spiritual Connection" },
+
+      // Reflection Questions
+      { id: 31, text: "After completing this assessment, what did you notice about your marriage?", section: "Results & Reflection", type: "textarea" },
+      { id: 32, text: "What steps do you feel called to take toward a more flourishing, purpose-driven marriage?", section: "Results & Reflection", type: "textarea", optional: true },
+    ];
+
+    const MAP = {
+      loveless: [{ q: 1 }, { q: 2 }, { q: 3, rev: true }, { q: 5 }],
+      sexless: [{ q: 6, rev: true }, { q: 7 }, { q: 9 }],
+      dissatisfied: [{ q: 6, rev: true }, { q: 8, rev: true }, { q: 10 }],
+      dull: [{ q: 4, rev: true }, { q: 21, rev: true }, { q: 23 }],
+      toxic: [{ q: 12 }, { q: 15 }, { q: 24 }],
+      functional: [{ q: 16 }, { q: 2 }, { q: 4, rev: true }, { q: 21, rev: true }],  // refined
+      good: [{ q: 11 }, { q: 13 }, { q: 22 }, { q: 25 }],
+      thriving: [{ q: 4 }, { q: 17 }, { q: 21 }, { q: 22 }],
+      kingdom: [{ q: 17 }, { q: 18 }, { q: 19 }, { q: 26 }, { q: 27 }, { q: 28 }, { q: 29 }, { q: 30 }],
+    };
+
+    const RANGE_LABELS = [
+      { min: 1.0, max: 2.4, label: "Major struggles – needs restoration and counseling." },
+      { min: 2.5, max: 3.4, label: "Stable but stagnant – growth and healing needed." },
+      { min: 3.5, max: 4.4, label: "Healthy and growing – thriving qualities visible." },
+      { min: 4.5, max: 5.0, label: "Flourishing – Spirit-led, purpose-driven unity." },
+    ];
+
+    // === State ===
+    const responses = {}; // qId -> 1..5
+
+    // === Helpers ===
+    const rev = x => 6 - x;
+    function rangeLabel(avg) {
+      const r = RANGE_LABELS.find(r => avg >= r.min && avg <= r.max);
+      return r ? r.label : "";
+    }
+    function calcScores() {
+      const result = {};
+      for (const t of TYPES) {
+        const items = MAP[t.id];
+        let sum = 0, count = 0;
+        for (const it of items) {
+          const v = responses[it.q];
+          if (!v) continue;
+          sum += it.rev ? rev(v) : v;
+          count++;
+        }
+        result[t.id] = { sum, count, avg: count ? (sum / count) : 0 };
+      }
+      const PRIORITY = ["kingdom", "thriving", "good", "functional", "dull", "dissatisfied", "sexless", "loveless", "toxic"];
+      const ordered = [...TYPES.map(t => t.id)].sort((a, b) => {
+        const diff = result[b].avg - result[a].avg;
+        return diff !== 0 ? diff : (PRIORITY.indexOf(a) - PRIORITY.indexOf(b));
+      });
+      return { perType: result, ordered, top: ordered[0], runner: ordered[1] };
+    }
+
+    function setProgress() {
+      const requiredQuestions = QUESTIONS.filter(q => !q.optional);
+      const answeredRequired = requiredQuestions.filter(q => responses[q.id] !== undefined && responses[q.id] !== "").length;
+      const pct = Math.round(answeredRequired / requiredQuestions.length * 100);
+      document.getElementById('bar').style.width = pct + '%';
+      document.getElementById('progressNote').textContent = `Answered ${answeredRequired}/${requiredQuestions.length} required (${pct}%)`;
+    }
+
+    function renderQuestions() {
+      const host = document.getElementById('questions');
+      host.innerHTML = "";
+      const sections = {};
+      QUESTIONS.forEach(q => {
+        if (!sections[q.section]) {
+          const sec = document.createElement('div');
+          sec.className = "card";
+          sec.innerHTML = `<h2 class="section-title">${q.section}</h2><div data-sec="${q.section}"></div>`;
+          host.appendChild(sec);
+          sections[q.section] = sec.querySelector('[data-sec]');
+        }
+        const wrap = document.createElement('div');
+        wrap.className = "q";
+
+        // Check if it's a textarea question
+        if (q.type === "textarea") {
+          wrap.innerHTML = `
+            <div class="qhead">
+              <div><span class="qnum">Q${q.id}.</span> ${q.text}</div>
+              ${q.optional ? '<span class="pill" style="background:#fff3cd;border-color:#ffc107;color:#856404">Optional</span>' : '<span class="pill">Required</span>'}
+            </div>
+            <textarea id="q${q.id}" rows="4" style="width:100%;margin-top:8px;padding:10px;border:1px solid var(--border);border-radius:10px;font-family:inherit;font-size:14px" placeholder="Type your response here..."></textarea>
+          `;
+          sections[q.section].appendChild(wrap);
+          const textarea = wrap.querySelector('textarea');
+          textarea.addEventListener('input', e => {
+            responses[q.id] = textarea.value;
+            setProgress();
+          });
+        } else {
+          // Original radio button questions
+          wrap.innerHTML = `
+            <div class="qhead"><div><span class="qnum">Q${q.id}.</span> ${q.text}</div><span class="pill">${q.section}</span></div>
+            <div class="scale" role="radiogroup" aria-label="Scale for question ${q.id}">
+              ${[1, 2, 3, 4, 5].map(v => `
+                <label class="opt">
+                  <input type="radio" name="q${q.id}" value="${v}" aria-label="${v}">
+                  ${v}. ${["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"][v - 1]}
+                </label>
+              `).join('')}
+            </div>
+          `;
+          sections[q.section].appendChild(wrap);
+          wrap.querySelectorAll('input[type=radio]').forEach(inp => {
+            inp.addEventListener('change', e => {
+              responses[q.id] = Number(inp.value);
+              setProgress();
+            });
+          });
+        }
+      });
+    }
+
+    function renderResults() {
+      const box = document.getElementById('resultBody');
+      const { perType, ordered, top, runner } = calcScores();
+      if (!top) {
+        box.innerHTML = `<p class="note">Answer a few questions and click “Calculate results”.</p>`;
+        return;
+      }
+      const topMeta = TYPES.find(t => t.id === top);
+      const runMeta = runner ? TYPES.find(t => t.id === runner) : null;
+
+      // Table rows
+      const rows = TYPES.map(t => {
+        const avg = perType[t.id].avg || 0;
+        let cls = "";
+        if (avg >= 4.5) cls = "good"; else if (avg >= 3.5) cls = ""; else if (avg >= 2.5) cls = "warn"; else cls = "bad";
+        return `<tr><td>${t.name}</td><td>${t.group}</td><td class="${cls}"><strong>${avg.toFixed(2)}</strong></td></tr>`;
+      }).join("");
+
+      box.innerHTML = `
+    <div class="card" style="border-color:#eddba8; background:linear-gradient(180deg,#fff, #fffef8)">
+      <h3 style="margin:0 0 4px; font-size:20px;">Your marriage type</h3>
+      <p style="margin:0"><strong>${topMeta.name}</strong> <span class="pill">${topMeta.group}</span></p>
+      <p class="note" style="margin:6px 0 0">${DESCRIPTIONS[top]}</p>
+      <p class="note" style="margin:6px 0 0">Average score: <strong>${perType[top].avg.toFixed(2)} / 5</strong><br>${rangeLabel(perType[top].avg)}</p>
+      ${runner ? `<p class="note" style="margin:8px 0 0">Secondary type: <strong>${runMeta.name}</strong> <span class="pill">${runMeta.group}</span></p>` : ""}
+    </div>
+    <h3 style="margin-top:16px" class="section-title">All category scores</h3>
+    <table>
+      <thead><tr><th>Type</th><th>Group</th><th>Average (0–5)</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p class="note">Legend: <span class="good">≥4.5</span> flourishing • <span>3.5–4.49</span> healthy • <span class="warn">2.5–3.49</span> stagnant • <span class="bad">&lt;2.5</span> major struggles.</p>
+    <details style="margin-top:10px"><summary class="note">Growth Path</summary>
+      <p class="note">Functional → Good → Thriving → Kingdom-Purpose. Build safety and kindness, add rhythms (prayer, dates, check-ins), and clarify shared mission.</p>
+    </details>
+  `;
+    }
+
+    function exportJSON() {
+      const { perType, ordered, top, runner } = calcScores();
+      const data = {
+        version: 1,
+        generatedAt: new Date().toISOString(),
+        answers: responses,
+        reflections: {
+          q31: responses[31] || "",
+          q32: responses[32] || ""
+        },
+        scores: Object.fromEntries(TYPES.map(t => [t.id, {
+          sum: perType[t.id].sum, count: perType[t.id].count, avg: Number((perType[t.id].avg || 0).toFixed(4))
+        }])),
+        ranking: ordered,
+        top, runner
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'marriage-assessment-results.json';
+      document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+
+    // === Init ===
+    renderQuestions();
+    setProgress();
+    document.getElementById('calcBtn').addEventListener('click', renderResults);
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    document.getElementById('resetBtn').addEventListener('click', () => { for (const k in responses) delete responses[k]; document.querySelectorAll('input[type=radio]').forEach(i => i.checked = false); setProgress(); document.getElementById('resultBody').innerHTML = ""; window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    document.getElementById('exportBtn').addEventListener('click', exportJSON);
+  </script>
+</body>
+
+</html>
