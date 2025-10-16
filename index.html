@@ -487,14 +487,15 @@
       try {
         await fetch(ENDPOINT_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain" },
           body: JSON.stringify(payload),
         });
         document.getElementById('emailCard').classList.add('hidden');
         document.getElementById('thankyou').classList.remove('hidden');
         window.scrollTo({ top: 0, behavior: "smooth" });
       } catch (err) {
-        note.textContent = "We couldn’t send the email. Please check your connection or try again.";
+        note.textContent = "We couldn't send the email. Please check your connection or try again.";
         console.error(err);
       }
     }
